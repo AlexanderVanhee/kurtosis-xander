@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer_1"
+   data-name="Layer 1"
+   viewBox="0 0 122.88 84.68"
+   version="1.1"
+   sodipodi:docname="booked.svg"
+   inkscape:version="1.3.2 (091e20ef0f, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="8.3007814"
+     inkscape:cx="61.439999"
+     inkscape:cy="42.285176"
+     inkscape:window-width="1920"
+     inkscape:window-height="1012"
+     inkscape:window-x="1920"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" />
+  <title
+     id="title1">booking-reservation</title>
+  <path
+     d="m 24.15,0 h 75.76 c 2.43926,-0.01855045 4.78018,0.96044314 6.48,2.71 v 0 c 1.71328,1.8003644 2.86067,4.0638527 3.3,6.51 l 13,65 c 0.0989,0.500642 0.14915,1.009681 0.15,1.52 -0.0347,2.234959 -0.96831,4.361701 -2.59,5.9 -1.48134,1.455798 -3.35403,2.449465 -5.39,2.86 v 0 c -0.65812,0.134551 -1.32826,0.201566 -2,0.2 H 38.11 37.34 5.81 C 1.44,84.22 -0.28,81 0,76.75 l 12.23,-62 c 0.72,-2.77 1.39,-5.67 2.24,-8 C 14.609051,6.3119321 14.786402,5.8869579 15,5.48 v 0 l 0.05,-0.1 v 0 C 15.486564,4.5337556 16.057284,3.7637901 16.74,3.1 18.186878,1.665472 20.010676,0.67035837 22,0.23 22.706577,0.07789249 23.427237,7.9864105e-4 24.15,0 Z M 99.91,6.51 H 24.15 c -0.258724,3.147e-4 -0.516737,0.027121 -0.77,0.08 -0.755659,0.1686792 -1.448685,0.5463782 -2,1.09 -0.362454,0.3163098 -0.588257,0.7607485 -0.63,1.24 1.57,16.67 10.15,47.38 14,65.23 0.21167,1.202078 0.75551,2.320934 1.57,3.23 v 0 c 0.484735,0.501055 1.152851,0.782748 1.85,0.78 H 113 c 0.23159,-0.0033 0.46246,-0.02673 0.69,-0.07 v 0 c 0.78474,-0.158861 1.50697,-0.540808 2.08,-1.1 0.37573,-0.334854 0.61141,-0.799059 0.66,-1.3 v -0.25 l -13,-65 c -0.18836,-1.1847271 -0.71636,-2.28937 -1.52,-3.18 -0.49057,-0.5130178 -1.17018,-0.8022173 -1.88,-0.8 z"
+     id="path1"
+     sodipodi:nodetypes="ccssccccsscccccccsccscccccccccssccssccccccc" />
+</svg>

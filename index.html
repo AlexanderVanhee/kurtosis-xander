@@ -1,138 +1,253 @@
 <!DOCTYPE html>
-<html>
-
+<html data-bs-theme-value="light">
 <head>
-  <title>Kurtosis</title>
-  <link rel="stylesheet" type="text/css" href="style.css" />
-  <meta name="description" content="A tool for KURT power users" />
-  <meta name="keywords" content="Agora, booking, seats, KU Leuven" />
-  <script defer src="https://analytics.eu.umami.is/script.js"
-    data-website-id="6857b71b-5a84-4d62-a7f1-da62c1e1cc87"></script>
-  <link rel="preconnect" href="https://rsms.me/" />
-  <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>Kurtosis</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <meta name="description" content="A tool for KURT power users" />
+    <meta name="keywords" content="Agora, booking, seats, KU Leuven, KULAK, antwerpen" />
 
-  <!-- Apple Touch Icon -->
-  <link rel="apple-touch-icon" sizes="400x400" href="/assets/apple-icon.png" />
+    <link rel="preconnect" href="https://rsms.me/" />
+    
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="400x400" href="/assets/apple-icon.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
 </head>
 
 <body>
-  <form id="queryForm">
-    <div class="queryContainer">
-      <label for="date">Library:</label>
-      <select id="library" name="library" required>
-
-        <optgroup label="Agora">
-          <option value="agora" selected>Silent Study</option>
-          <option value="agora-blok-rooms">
-            Seats in rooms (Only during blokperiode)
-          </option>
-          <option value="agora-flexispace">
-            FlexiSpace (Only during blokperiode)
-          </option>
-          <option value="agora-rooms">
-            Meeting rooms (Not during blokperiode)
-          </option>
-        </optgroup>
-
-        <optgroup label="Arenberg">
-          <option value="arenberg-main">Boekenzaal/Leeszaal/DeLeVille</option>
-          <option value="arenberg-rest">Kelder/Zolder</option>
-          <option value="arenberg-tulp">Tulp 0/1</option>
-        </optgroup>
-
-        <option value="ebib">EBIB</option>
-
-        <option value="erasmus">Artes Erasmushuis</option>
-        <option value="kulak">Kulak</option>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
+  <div class="">
+      <select class="btn btn-light" id="languageSwitch" onchange="switchLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="nl">Nederlands</option>
+          
       </select>
-    </div>
-    <div class="queryContainer">
-      <label for="date">Date:</label>
-      <input type="date" id="date" name="date" required />
-    </div>
-    <div class="queryContainer">
-      <label for="rNumber">R-number:</label>
-      <input type="text" id="rNumber" name="rNumber" placeholder="r1234567" autocapitalize="no" required />
-    </div>
-    <div class="queryContainer">
-      <label for="rememberRNumber">Remember R-number:</label>
-      <input type="checkbox" id="rememberRNumber" name="rememberRNumber" checked />
-    </div>
-    <button id="fetchButton" type="submit">Fetch</button>
-  </form>
-  <div id="banner" style="display: none;">
-    <div style="gap: 10px; display: flex; flex-direction: column;">
-      <h2>We're working on an app 📱</h2>
-      <p>Receive notifications about seat availability. Reserve multiple seats within a day. Use Face ID for booking,
-        not KU Leuven Authenticator. Sign up to become an early adopter.</p>
-    </div>
-    <div class="btn-row">
-      <button onclick="window.open('https://tally.so/r/3XGBad')" class="primary">Join the beta</button>
-      <button onclick="doNotShowBannerAgain()" class="secondary">Do not show again</button>
-    </div>
-  </div>
-  <!--<details id="seatGuide">
-      <summary>Seat guide</summary>
-      <div id="agora">
-        <ul>
-          <li>101-256 — Silent Study 1 <a href="https://bib.kuleuven.be/agora/afbeeldingen/lokalen/ss1.png/image_view_fullscreen">[Map]</a></li>
-          <li>257-310 — Silent Study 2 <a href="https://bib.kuleuven.be/agora/afbeeldingen/lokalen/ss2.png/image_view_fullscreen">[Map]</a></li>
-        </ul>
-      </div>
-      
-    </details>-->
-  <div id="tableContainer">
-    <table id="seatTable" border="1"></table>
-  </div>
-  <br />
-  <div id="notice">
-    This tool is not affiliated with KU Leuven. Please use it responsibly and
-    do not abuse the system.
-    <br />
-    Built by <a href="https://instagram.com/bre1tburg">Ilia Breitburg</a> and
-    <a href="https://gbgk.me/">George Bougakov</a>. Learn more
-    <a href="https://github.com/breitburg/kurtosis">about how this tool works</a>.
-  </div>
 
-  <!-- <button onclick="document.getElementById('bookDialog').showModal()">DEBUG: open dialog</button> -->
+      <div class="innerContentDiv">
+          <div class="queryDiv">
+              <form id="queryForm">
+                  <div class="form-group">
+                      <label for="dropdown"><span id="library-label">Library:</span></label>
+
+                      <input type="hidden" id="selectedCardID" name="selectedCardID" value="">
+
+                      <div class="dropdown">
+
+                        <button class="btn btn-light dropdown-toggle form-control library-dropdown" type="button" id="dropdownMenuButton" aria-haspopup="true" aria-expanded="false">
+                          Select Option
+                        </button>
+
+                    
+                        <div id="dropdownMenu" class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="display:none">
+                          <div class="text-muted top-text">
+                            <span>Agora - Leuven</span>
+                            <button type="button" class="btn btn-light compact-button" data-toggle="button" aria-pressed="false" onclick="toggleCompactMode()">
+                              <img src="assets/list-compact.svg">
+                            </button>
+                          </div>
+                          <hr class="dropdown-divider">
+                          <div class="card" data-folder="agora" onclick="selectCard('Silent Study', 'agora')">
+                            <img src="assets/locations/silentstudy.webp" class="card-img-top" alt="Silent Study">
+                            <div class="card-body">
+                              <p class="card-text">Silent Study</p>
+                            </div>
+                          </div>
+                          <div class="card"  data-folder="agora" onclick="selectCard('Seats in rooms (blok)', 'agora-blok-rooms')">
+                            <img src="assets/locations/agorameeting.webp" class="card-img-top" alt="Seats in rooms">
+                            <div class="card-body">
+                              <p class="card-text">Seats in rooms (Only during blokperiode)</p>
+                            </div>
+                          </div>
+                          <div class="card"  data-folder="agora" onclick="selectCard('FlexiSpace (blok)', 'agora-flexispace')">
+                            <img src="assets/locations/flexispace.webp"   class="card-img-top" alt="FlexiSpace">
+                            <div class="card-body">
+                              <p class="card-text">FlexiSpace (Only during blokperiode)</p>
+                            </div>
+                          </div>
+                          <div class="card" data-folder="agora" onclick="selectCard('Meeting rooms (non blok)', 'agora-rooms')">
+                            <img src="assets/locations/agorameeting.webp"  class="card-img-top" alt="Meeting rooms">
+                            <div class="card-body">
+                              <p class="card-text">Meeting rooms (Not during blokperiode)</p>
+                            </div>
+                          </div>
+                          <div class="text-muted">Arenberg - Leuven</div>
+                          <hr class="dropdown-divider">
+                          <div class="card" data-folder="arenberg" onclick="selectCard('Boekenzaal/Leeszaal/DeLeVille', 'arenberg-main')">
+                            <img src="assets/locations/delaville.webp"   class="card-img-top" alt="Boekenzaal/Leeszaal/DeLeVille">
+                            <div class="card-body">
+                              <p class="card-text">Boeken/Leeszaal/DeLeVille</p>
+                            </div>
+                          </div>
+                          <div class="card" data-folder="arenberg" onclick="selectCard('Kelder/Zolder', 'arenberg-rest')">
+                            <img src="assets/locations/kelderzolder.webp" class="card-img-top" alt="Kelder/Zolder">
+                            <div class="card-body">
+                              <p class="card-text">Kelder/Zolder</p>
+                            </div>
+                          </div>
+                          <div class="card" data-folder="arenberg" onclick="selectCard('Tulp 0/1', 'arenberg-tulp')">
+                            <img src="assets/locations/tulp.webp"  class="card-img-top" alt="Tulp 0/1">
+                            <div class="card-body">
+                              <p class="card-text">Tulp 0/1</p>
+                            </div>
+                          </div>
+                          <div class="text-muted">Additional Locations - Leuven</div>
+                          <hr class="dropdown-divider">
+                          <div class="card" data-folder="ebib" onclick="selectCard('EBIB', 'ebib')">
+                            <img src="assets/locations/ebib.webp"   class="card-img-top" alt="EBIB">
+                            <div class="card-body">
+                              <p class="card-text">EBIB</p>
+                            </div>
+                          </div>
+                          <div class="card" data-folder="erasmushuis" onclick="selectCard('Artes Erasmushuis', 'erasmus')">
+                            <img src="assets/locations/arteserasmus.webp"  class="card-img-top" alt="Artes Erasmushuis">
+                            <div class="card-body">
+                              <p class="card-text">Artes Erasmushuis</p>
+                            </div>
+                          </div>
+
+                          <div class="text-muted top-text">
+                            <span>Kortrijk</span>
+                          </div>
+
+                          <div class="card"  data-folder="kulak" onclick="selectCard('Kulak', 'kulak') ">
+                            <img src="assets/locations/kulak.webp"  class="card-img-top" alt="Kulak">
+                            <div class="card-body">
+                              <p class="card-text">Kulak</p>
+                            </div>
+                          </div>
+
+                          <div class="text-muted top-text">
+                            <span>Antwerp</span>
+                          </div>
+
+                          <div class="card" data-folder="antwerpen" onclick="selectCard('Balustrade', 'antwerp-balustrade')">
+                            <img src="assets/locations/antwerpballustrade.webp"  class="card-img-top" alt="">
+                            <div class="card-body">
+                              <p class="card-text">Balustrade</p>
+                            </div>
+                          </div>
+
+                          <div class="card"  data-folder="antwerpen" onclick="selectCard('Silent Study', 'antwerp-silentstudy')">
+                            <img src="assets/locations/antwerpsilentstudy.webp"  class="card-img-top" alt="">
+                            <div class="card-body">
+                              <p class="card-text">Silent Study</p>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+
+                  </div>
+                  <div class="form-group">
+                      <label for="date"><span id="date-label">Date:</span></label>
+                      <input type="date" class="form-control" id="date" name="date" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="rNumber"><span id="r-number-label">r-number:</span></label>
+                    <div class="col-12 p-0">
+                        <input type="text" class="form-control w-100" id="rNumber" name="rNumber" placeholder="r1234567" autocapitalize="no" required />
+                    </div>
+                </div>
+                  <div class="form-group form-check">
+                      <label class="form-check-label" for="rememberRNumber"><span id="remember-r-number-label">Remember R-number:</span></label>
+                      <input type="checkbox" class="form-check-input" id="rememberRNumber" name="rememberRNumber" checked />
+                  </div>
+                  <button id="fetchButton" class="btn btn-primary" type="submit"><span id="fetch-label">Fetch</span></button>
+                  <button type="button" alt="map" id="openMapCarousel" class="btn btn-secondary" data-bs-toggle="modal"  data-bs-target="#imageModal">
+                    <img src="assets/map.svg">
+                  </button> 
+              </form>
+          </div>
+          <div id="tableContainer" class="container">
+              <table class="table" id="seatTable"></table>
+          </div>
+      </div>
+      <br />
+      <footer id="notice-label" class="text-center">
+          <span id="notice-text">This tool is not affiliated with KU Leuven. Please use it responsibly and
+              do not abuse the system.
+              <br />
+              Built by <a href="https://instagram.com/bre1tburg">Ilia Breitburg</a> and
+              <a href="https://gbgk.me/">George Bougakov</a>. Learn more
+              <a href="https://github.com/breitburg/kurtosis">about how this tool works</a>.
+          </span>
+      </footer>
+  </div>
 
   <dialog id="bookDialog">
-    <div class="dialogContent">
-      <h2 class="dialogTitle">Reserve this seat</h2>
+      <div class="dialogContent">
+          <h2 class="dialogTitle"><span id="reserve-seat-text">Reserve this seat</span></h2>
 
-      <div class="warningBlock" id="reservationClosed">
-        <b>Warning!</b> You have selected a date for which reservation is not yet open. You can still make a link and
-        book the seat later.
+          <div class="alert alert-warning" id="reservationClosed">
+              <strong><span id="warning-text">Warning!</span></strong> <span id="reservation-closed-text">You have selected a date for which reservation is not yet open. You can still make a link and book the seat later.</span>
+          </div>
+
+          <div class="dialogFormBlock">
+              <label for="startTime"><span id="start-time-label">Start time:</span></label>
+              <select class="form-control" id="startTime" name="startTime"></select>
+          </div>
+
+          <div class="dialogFormBlock">
+              <label for="endTime"><span id="end-time-label">End time:</span></label>
+              <select class="form-control" id="endTime" name="endTime"></select>
+          </div>
+
+          <p>
+              <span id="redirect-text">You will be redirected to KURT to complete the reservation, where you will be able to add a subject or attendees</span>
+          </p>
+
+          <div class="dialogButtonRow">
+              <button id="copyLink" class="btn btn-secondary"><span id="copy-link-label">Copy link</span></button>
+              <button id="bookButton" class="btn btn-primary"><span id="go-to-booking-label">Go to booking</span></button>
+          </div>
+          <form class="dialogButtonRow">
+              <button type="submit" id="closeButton" class="btn btn-danger" formmethod="dialog" formnovalidate>
+                  <span id="close-label">Close</span>
+              </button>
+          </form>
       </div>
-
-      <div class="dialogFormBlock">
-        <label for="startTime">Start time:</label>
-        <select id="startTime" name="startTime"></select>
-      </div>
-
-      <div class="dialogFormBlock">
-        <label for="endTime">End time:</label>
-        <select id="endTime" name="startTime"></select>
-      </div>
-
-      <p>
-        You will be redirected to KURT to complete the reservation, where you will be able to add a subject or attendees
-      </p>
-
-      <div class="dialogButtonRow">
-        <button id="copyLink">Copy link</button>
-        <button id="bookButton">Go to booking</button>
-      </div>
-      <form class="dialogButtonRow">
-        <button type="submit" id="closeButton" formmethod="dialog" formnovalidate>
-          Close
-        </button>
-      </form>
-    </div>
   </dialog>
 
-  <script src="script.js"></script>
-</body>
 
+<!-- Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true" data-bs-theme="light">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel"><span id="floor-plan-label">Floor Plan</span></h5>
+        <button  type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter:none"></button>
+      </div>
+      <div class="modal-body">
+        <div id="carouselExample" class="carousel slide" data-bs-ride="false" data-interval="false" data-bs-touch="false">
+          <ol class="carousel-indicators">
+            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner">
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src='https://unpkg.com/panzoom@9.4.0/dist/panzoom.min.js'></script>
+</body>
 </html>
+

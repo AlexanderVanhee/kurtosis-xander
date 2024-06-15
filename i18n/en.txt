@@ -1,0 +1,24 @@
+library=Library
+
+
+date=Date:
+r-number=r-number:
+remember-r-number=Remember r-number:
+start-time=Start time:
+end-time=End time:
+warning-text=Warning!
+reservation-closed-text=You have selected a date for which reservation is not yet open. You can still make a link and book the seat later.
+redirect-text=You will be redirected to KURT to complete the reservation, where you will be able to add a subject or attendees
+copy-link-label=Copy link
+go-to-booking-label=Go to booking
+close-label=Close
+fetch=Fetch
+notice=This tool is not affiliated with KU Leuven. Please use it responsibly and do not abuse the system. <br /> Built by <a href="https://instagram.com/bre1tburg">Ilia Breitburg</a> and <a href="https://gbgk.me/">George Bougakov</a>. Modified by Alexander. Learn more <a href="https://github.com/breitburg/kurtosis">about how this tool works</a>.
+
+
+
+book=Book
+check-in=Check In
+actions=Actions
+name-column=Name
+

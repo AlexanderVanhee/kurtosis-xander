@@ -31,12 +31,28 @@ dateInput.max = maxDate;
 // Load saved r-number from local storage
 const savedRNumber = localStorage.getItem("rNumber");
 
+
+
 if (savedRNumber) {
   document.getElementById("rNumber").value = savedRNumber;
 }
 
+function switchLanguage(option) {
+
+  localStorage.setItem("language", option);
+  translateSpans(`i18n/${option}.txt`);
+}
+
+const savedLanguage = localStorage.getItem("language");
+
+if (savedLanguage) {
+  switchLanguage(savedLanguage);
+} else {
+  switchLanguage("en");
+}
+
 async function fetchTimeslots(date, uid) {
-  const selectedLibrary = document.getElementById("library").value;
+  const selectedLibrary = document.getElementById('selectedCardID').value;
 
   const seats = await fetch(`/seats/${selectedLibrary}.json`).then(response =>
     response.json()
@@ -71,11 +87,6 @@ async function fetchTimeslots(date, uid) {
         status: item.Status,
       }))
     );
-  
-  if (timeslots.length === 0) {
-    alert("Your username (r-number/u-number) was rejected by KURT. Please make sure you have entered it exactly as it is on your KU Leuven card");
-    throw new Error("Invalid username");
-  }
 
   return [timeslots, seats];
 }
@@ -97,9 +108,9 @@ function renderTable(sortedTimeslots, selectedDate, selectedLibrary) {
   const table = document.getElementById("seatTable");
   table.innerHTML = `
         <tr>
-            <th>Name</th>
+            <th><span id="name-column-label">Name</span></th>
             ${[...Array(24)].map((_, index) => `<th>${index}</th>`).join("")}
-            <th colspan="2">Actions</th>
+            <th colspan="2"><span id="actions-label">Actions</span></th>
         </tr>
     `;
 
@@ -129,7 +140,14 @@ function renderTable(sortedTimeslots, selectedDate, selectedLibrary) {
           : displayStatus === "B"
           ? "booked"
           : "available";
-      rowHtml += `<td class="${cellClass}">${displayStatus}</td>`;
+
+      const displayStatusImg =
+        displayStatus === "U" || displayStatus === "C"
+          ? "unavailable.svg"
+          : displayStatus === "B"
+          ? "booked.svg"
+          : "available.svg";
+      rowHtml += `<td class="${cellClass}"><img src="assets/${displayStatusImg}"></td>`;
     }
 
     const selectedMonth = String(selectedDate.getMonth() + 1).padStart(2, "0");
@@ -137,22 +155,20 @@ function renderTable(sortedTimeslots, selectedDate, selectedLibrary) {
     const selectedYear = selectedDate.getFullYear();
     const selectedFormattedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
 
+    var theme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+    var buttonClass = theme === 'dark' ? 'btn-dark' : 'btn-light';
+
     const checkInLink = `https://kuleuven.be/kurtqr?id=${resourceData.resourceId}`;
     const bookLink = `https://www-sso.groupware.kuleuven.be/sites/KURT/Pages/default.aspx?pid=${PIDS[selectedLibrary]}&showresults=done&resourceid=${resourceData.resourceId}&startDate=${selectedFormattedDate}T00%3A00%3A00`;
-    rowHtml += `<td class="smolFont"><button onClick='openBookingDialog(${JSON.stringify(
+    rowHtml += `<td class="smolFont"><button class="btn ${buttonClass} btn-sm" onClick='openBookingDialog(${JSON.stringify(
       {
         resourceId: resourceData.resourceId,
         reservations: resourceReservations,
       }
-    )})'>Book</button></td><td class="smolFont"><button onClick='window.open("${checkInLink}")'>Check&nbsp;In</button></td>`;
+    )})'><span id="book-label">Book</span></button></td><td class="smolFont"><button class="btn ${buttonClass} btn-sm" onClick='window.open("${checkInLink}")'><span id="check-in-label">Check In</span></button></td>`;
 
     rowHtml += "</tr>";
     table.insertAdjacentHTML("beforeend", rowHtml);
-
-    // Show the banner if the user has not hidden it yet
-    if (!localStorage.getItem("hideBanner")) {
-      document.getElementById('banner').style.display = 'flex';
-    }
   }
 
   // Show the table after rendering
@@ -247,7 +263,7 @@ document
     }
 
     setTimeout(() => {
-      this.textContent = "Copy booking link";
+      this.textContent = "Copy link";
       this.disabled = false;
     }, 1000);
   });
@@ -314,25 +330,21 @@ document
 
     const selectedDate = new Date(document.getElementById("date").value);
     const rNumberField = document.getElementById("rNumber");
-    document.getElementById("rNumber").value = rNumberField.value.trim().toLowerCase();
     let rNumber = rNumberField.value;
 
     // Check if the r-number starts with 'r' and add it if it doesn't
-    if (!rNumber.startsWith("r") && !rNumber.startsWith("u")) {
+    if (!rNumber.startsWith("r")) {
       rNumber = `r${rNumber}`;
       rNumberField.value = rNumber;
     }
 
-    if (rNumber.match(/[ur]\d{7}/) === null) {
-      alert("Invalid username (r-number/u-number). Make sure you entered it exactly as it is on your KU Leuven card");
+    // Throw a pop-up if the r-number is obviously not valid.
+    if (!/^([rsm]\d{7})$/.test(rNumber)) {
+      alert("Invalid ID. An ID must start with 'r', 's', or 'm', followed by 7 numbers.");
       return;
+      
     }
-
-    if (rNumber.match(/[u]\d{7}/)) {
-      alert(
-        "Warning: You entered a U-number. We were unable to test the functionality of this tool with U-numbers. Please proceed with caution."
-      );
-    }
+  
 
     // Check if the checkbox is checked
     const rememberRNumber = document.getElementById("rememberRNumber").checked;
@@ -359,18 +371,188 @@ document
         renderTable(
           sortedTimeslots,
           selectedDate,
-          document.getElementById("library").value
+          document.getElementById('selectedCardID').value
         );
         fetchButton.textContent = previousButtonText;
         fetchButton.disabled = false;
-      }).catch((error) => {
-        console.log(error);
-        fetchButton.textContent = previousButtonText;
-        fetchButton.disabled = false;
+
+        //update the text in the form to the right language.
+        const savedLanguage = localStorage.getItem("language");
+        if (savedLanguage) {
+          switchLanguage(savedLanguage);
+        } else {
+          switchLanguage("en");
+        }
+        
       });
   });
 
-function doNotShowBannerAgain() {
-  document.getElementById("banner").style.display = "none";
-  localStorage.setItem("hideBanner", true);
-}
+  function translateSpans(TranslationFile) {
+    fetch(TranslationFile)
+    .then(response => response.text())
+    .then(text => {
+        var translations = text.split('\n');
+        translations.forEach(translation => {
+            var [key, value] = translation.split('=');
+            var elements = document.querySelectorAll('[id="' + key + '-label"]');
+            elements.forEach(element => {
+                element.innerHTML = value;
+            });
+        });
+        
+        // Notice text part
+        var noticeText = document.getElementById('notice-label');
+        if (noticeText) {
+          var noticeKey = 'notice';
+          var noticeTranslation = translations.find(t => t.startsWith(noticeKey + '='));
+          if (noticeTranslation) {
+              var noticeValue = noticeTranslation.substring(noticeTranslation.indexOf('=') + 1);
+              noticeText.innerHTML = noticeValue;
+          }
+      }
+    })
+    .catch(error => console.error('Error loading localization file:', error));
+  }
+
+
+  //table scripts
+  var dropdownToggle = document.getElementById('dropdownMenuButton');
+  var dropdownMenu = dropdownToggle.nextElementSibling;
+
+  function toggleDropdown() {
+    if (dropdownMenu.style.display === 'block') {
+      dropdownMenu.style.display = 'none';
+    } else {
+      dropdownMenu.style.display = 'block';
+    }
+  }
+
+  dropdownToggle.addEventListener('click', toggleDropdown);
+
+  function selectCard(cardText, cardID) {
+    dropdownToggle.innerText = cardText;
+    dropdownMenu.style.display = 'none';
+
+    // Set the hidden input value
+    document.getElementById('selectedCardID').value = cardID;
+  }
+
+  function toggleCompactMode() {
+    const cards = document.querySelectorAll('.dropdown-menu .card');
+    cards.forEach(card => {
+      card.classList.toggle('compact-mode');
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        var buttons = document.querySelectorAll('.btn-light');
+        buttons.forEach(function(button) {
+            button.classList.remove('btn-light');
+            button.classList.add('btn-dark');
+        });
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var modal = document.getElementById('imageModal');
+  var folderButtons = document.querySelectorAll('#dropdownMenu .card');
+  var carouselInner = modal.querySelector('.carousel-inner');
+  var openMapCarousel = document.getElementById('openMapCarousel');
+
+  folderButtons = Array.from(folderButtons);
+
+  folderButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+      console.log(this.getAttribute('data-folder'))
+      var folder = this.getAttribute('data-folder');
+      loadImages(folder);
+    });
+  });
+
+  function loadImages(folder) {
+    carouselInner.innerHTML = '';
+    var carouselIndicators = document.querySelector('#carouselExample .carousel-indicators');
+    carouselIndicators.innerHTML = ''; 
+  
+    var imageFilenames = getImageFilenames(folder);
+  
+    imageFilenames.forEach(function(filename, index) {
+      var item = document.createElement('div');
+      item.classList.add('carousel-item');
+      if (index === 0) {
+        item.classList.add('active');
+      }
+  
+      var imageContainer = document.createElement('div');
+      imageContainer.classList.add('image-container');
+  
+      var img = document.createElement('img');
+      img.src = 'maps/' + folder + '/' + filename; 
+      img.alt = 'Zoomable Image ' + (index + 1);
+      img.classList.add('panzoom-element');
+  
+      imageContainer.appendChild(img);
+      item.appendChild(imageContainer);
+      carouselInner.appendChild(item);
+  
+      var indicator = document.createElement('li');
+      indicator.setAttribute('data-bs-target', '#carouselExample');
+      indicator.setAttribute('data-bs-slide-to', index.toString());
+      if (index === 0) {
+        indicator.classList.add('active');
+      }
+      carouselIndicators.appendChild(indicator);
+    });
+  
+    // Initialize Panzoom for images
+    var images = modal.querySelectorAll('.panzoom-element');
+    images.forEach(function(image) {
+      panzoom(image, {
+        minScale: 1,
+        maxScale: 3,
+      });
+    });
+  
+    openMapCarousel.style.display = 'initial';
+  
+    var carousel = new bootstrap.Carousel(document.getElementById('carouselExample'), {
+      interval: false, 
+    });
+  }
+
+  function getImageFilenames(folder) {
+    switch (folder) {
+      case 'agora':
+        return ['flexispace.webp', 'silentstudy1.webp', 'silentstudy2.webp'];
+      case 'antwerpen':
+        return ['floor1.jpg','floor2.jpg','floor3.jpg'];
+      case 'arenberg':
+        return [
+          'Arenberg_Campusbibliotheek_KURT_Seats_def-1.webp',
+          'Arenberg_Campusbibliotheek_KURT_Seats_def-2.webp',
+          'Arenberg_Campusbibliotheek_KURT_Seats_def-3.webp',
+          'Arenberg_Campusbibliotheek_KURT_Seats_def-4.webp',
+        ];
+      case 'ebib':
+        return ['101-124.webp', '125-154.webp', '155-414.webp', '415-444.webp'];
+      case 'erasmushuis':
+        return [
+          'floor0.webp',
+          'floor1.webp',
+          'floor2.webp',
+          'floor3.webp',
+          'floor4.webp',
+          'floor5.webp',
+          'floor6.webp',
+          'floor7.webp'
+        ];
+      case 'kulak':
+        return ['basement_50.webp', 'floorone_50.webp', 'groundfloor_50.webp'];
+      default:
+        return [];
+    }
+  }
+});
